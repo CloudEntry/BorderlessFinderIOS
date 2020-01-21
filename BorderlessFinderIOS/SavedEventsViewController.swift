@@ -31,7 +31,7 @@ class SavedEventsViewController: UIViewController, UITableViewDelegate, UITableV
             if (results?.count)! > 0 { // if there's at least one
                 for result in results! { // iterate over rows and add to places array
                     let event = result as! Events
-                    events.append(["name": event.name!, "location": event.location!, "date": event.date!])
+                    events.append(["name": event.name!, "location": event.location!, "date": event.date!, "time": event.time!])
                 }
             } else {
                 print("No results")
@@ -48,7 +48,7 @@ class SavedEventsViewController: UIViewController, UITableViewDelegate, UITableV
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: UITableViewCell.CellStyle.subtitle, reuseIdentifier: "myCell")
         cell.textLabel?.text = events[indexPath.row]["name"]
-        cell.detailTextLabel?.text = "\(events[indexPath.row]["location"] ?? "") | \(events[indexPath.row]["date"] ?? "")"
+        cell.detailTextLabel?.text = "\(events[indexPath.row]["location"] ?? "") | \(events[indexPath.row]["date"] ?? "") | \(events[indexPath.row]["time"] ?? "")"
         return cell
     }
     
