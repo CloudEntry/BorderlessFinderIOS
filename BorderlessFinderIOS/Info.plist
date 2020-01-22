@@ -68,6 +68,13 @@
 		<false/>
 		<key>NSExceptionDomains</key>
 		<dict>
+			<key>borderlessfinder.pythonanywhere.com</key>
+			<dict>
+				<key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+			</dict>
 			<key>localhost</key>
 			<dict>
 				<key>NSIncludesSubdomains</key>

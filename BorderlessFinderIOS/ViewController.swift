@@ -32,6 +32,8 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     var eventsOnDay = [("","","","","","")]
     var selectedEvent = ("","","","","","")
     
+    var new_events = [("","","","","","")]
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,6 +46,31 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         eventsOnDay.removeAll()
         GetStartDateDayPosition()
         fetchEvents()
+        do {
+            usleep(1000000)
+        }
+        events = new_events
+        print(new_events)
+        // section below allows automatic reloading of events -- commented out to run on pythonanywhere
+//        DispatchQueue.global(qos: .background).async {
+//            while(true) {
+//                do {
+//                    sleep(1)
+//                }
+//                self.new_events.removeAll()
+//                do {
+//                    usleep(100000)
+//                }
+//                self.fetchEvents()
+//                DispatchQueue.main.async {
+//                    self.events.removeAll()
+//                    do {
+//                        usleep(100000)
+//                    }
+//                    self.events = self.new_events
+//                }
+//            }
+//        }
     }
     
     //--------------(Calculates the number of "empty" boxes at the start of every month")------------------------------------------
@@ -270,6 +297,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     // ------------------------------------------------------------------------------------------
     
     func fetchEvents() {
+        
         struct event: Decodable {
             let id: Int
             let name: String
@@ -284,7 +312,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
             let events: [event]
         }
 
-        if let url = URL(string: "http://localhost:5000/api/v1.0/events") {
+        if let url = URL(string: "http://borderlessfinder.pythonanywhere.com/api/v1.0/events") {
             let session = URLSession.shared
             session.dataTask(with: url) { (data, response, err) in
                 guard let jsonData = data else {
@@ -296,7 +324,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
                     var count = 0
                     for anEvent in thisEventsData.events {
                         count += 1
-                        self.events.append((String(anEvent.id),anEvent.name,anEvent.society,anEvent.location,anEvent.date,anEvent.time))
+                        self.new_events.append((String(anEvent.id),anEvent.name,anEvent.society,anEvent.location,anEvent.date,anEvent.time))
                     }
                 } catch let jsonErr {
                     print("Error decoding JSON", jsonErr)

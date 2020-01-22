@@ -22,6 +22,7 @@ class DetailViewController: UIViewController, MKMapViewDelegate, CLLocationManag
     @IBOutlet weak var myMap: MKMapView!
     
     var selectedEvent = ("","","","","","")
+    var urlStr = ""
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,10 +43,10 @@ class DetailViewController: UIViewController, MKMapViewDelegate, CLLocationManag
         }
 
         struct eventData: Decodable {
-            let event: [eventDetail]
+            let event: eventDetail
         }
 
-        if let url = URL(string: "http://localhost:5000/api/v1.0/events/info/\(selectedEvent.0)") {
+        if let url = URL(string: "https://borderlessfinder.pythonanywhere.com/api/v1.0/events/info/\(selectedEvent.0)") {
             let session = URLSession.shared
             session.dataTask(with: url) { (data, response, err) in
                 guard let jsonData = data else {
@@ -55,8 +56,9 @@ class DetailViewController: UIViewController, MKMapViewDelegate, CLLocationManag
                     let decoder = JSONDecoder()
                     let thisEventData = try decoder.decode(eventData.self, from: jsonData)
                     DispatchQueue.main.async {
-                        self.descLabel.text = thisEventData.event[0].description
-                        self.plotMap(lat: thisEventData.event[0].lat, lon: thisEventData.event[0].lon)
+                        self.descLabel.text = thisEventData.event.description
+                        self.plotMap(lat: thisEventData.event.lat, lon: thisEventData.event.lon)
+                        self.urlStr = thisEventData.event.url
                     }
                 } catch let jsonErr {
                     print("Error decoding JSON", jsonErr)
@@ -77,4 +79,12 @@ class DetailViewController: UIViewController, MKMapViewDelegate, CLLocationManag
         annotation.coordinate = CLLocationCoordinate2D(latitude: Double(lat)!, longitude: Double(lon)!)
         myMap.addAnnotation(annotation)
     }
+    
+    @IBAction func register(_ sender: Any) {
+        if let url = URL(string: urlStr) {
+            UIApplication.shared.open(url)
+        }
+        // TODO:- Add Registered Event to CoreData
+    }
+    
 }
